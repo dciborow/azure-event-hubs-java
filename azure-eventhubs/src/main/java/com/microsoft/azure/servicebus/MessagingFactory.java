@@ -62,13 +62,13 @@ public class MessagingFactory extends ClientEntity implements IAmqpConnection, I
     private CBSChannel cbsChannel;
     private ManagementChannel mgmtChannel;
 
-    private Duration operationTimeout;
-    private RetryPolicy retryPolicy;
+    private final Duration operationTimeout;
+    private final RetryPolicy retryPolicy;
     private CompletableFuture<MessagingFactory> open;
     private ScheduledFuture openTimer;
     private ScheduledFuture closeTimer;
 
-    MessagingFactory(final ConnectionStringBuilder builder, final RetryPolicy retryPolicy) {
+    private MessagingFactory(final ConnectionStringBuilder builder, final RetryPolicy retryPolicy) {
         super("MessagingFactory".concat(StringUtil.getRandomString()), null);
 
         Timer.register(this.getClientId());
@@ -148,17 +148,17 @@ public class MessagingFactory extends ClientEntity implements IAmqpConnection, I
 
         return this.cbsChannel;
     }
-    
+
     public ManagementChannel getManagementChannel() {
     	synchronized (this.mgmtChannelCreateLock) {
     		if (this.mgmtChannel == null) {
     			this.mgmtChannel = new ManagementChannel(this, this, "mgmt-link");
     		}
     	}
-    	
+
     	return this.mgmtChannel;
     }
-    
+
     @Override
     public Session getSession(final String path, final Consumer<Session> onRemoteSessionOpen, final BiConsumer<ErrorCondition, Exception> onRemoteSessionOpenError) {
         if (this.getIsClosingOrClosed()) {

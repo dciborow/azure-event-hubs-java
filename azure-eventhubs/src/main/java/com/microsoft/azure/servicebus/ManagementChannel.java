@@ -6,11 +6,8 @@ package com.microsoft.azure.servicebus;
 
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.microsoft.azure.servicebus.ClientConstants;
-import com.microsoft.azure.servicebus.FaultTolerantObject;
 import com.microsoft.azure.servicebus.amqp.AmqpResponseCode;
 import com.microsoft.azure.servicebus.amqp.IAmqpConnection;
 import com.microsoft.azure.servicebus.amqp.IOperationResult;
@@ -28,9 +25,9 @@ import org.apache.qpid.proton.message.Message;
 public class ManagementChannel {
     private static final Logger TRACE_LOGGER = Logger.getLogger(ClientConstants.SERVICEBUS_CLIENT_TRACE);
     
-    final FaultTolerantObject<RequestResponseChannel> innerChannel;
-    final ISessionProvider sessionProvider;
-    final IAmqpConnection connectionEventDispatcher;
+    private final FaultTolerantObject<RequestResponseChannel> innerChannel;
+    private final ISessionProvider sessionProvider;
+    private final IAmqpConnection connectionEventDispatcher;
 
     public ManagementChannel(final ISessionProvider sessionProvider, final IAmqpConnection connection,
             final String linkName) {

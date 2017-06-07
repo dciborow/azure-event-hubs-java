@@ -7,7 +7,7 @@ package com.microsoft.azure.servicebus;
 import java.time.*;
 import java.util.concurrent.*;
 
-public class WorkItem<T> {
+class WorkItem<T> {
     private final TimeoutTracker tracker;
     private final CompletableFuture<T> work;
 
@@ -15,7 +15,7 @@ public class WorkItem<T> {
         this(completableFuture, TimeoutTracker.create(timeout));
     }
 
-    public WorkItem(final CompletableFuture<T> completableFuture, final TimeoutTracker tracker) {
+    WorkItem(final CompletableFuture<T> completableFuture, final TimeoutTracker tracker) {
         this.work = completableFuture;
         this.tracker = tracker;
     }

@@ -8,10 +8,10 @@ import java.time.Instant;
 
 final public class EventHubRuntimeInformation {
 	//final String type;
-    final String path;
-	final Instant createdAt;
-    final int partitionCount;
-    final String[] partitionIds;
+    private final String path;
+	private final Instant createdAt;
+    private final int partitionCount;
+    private final String[] partitionIds;
 
     EventHubRuntimeInformation(final String path, final Instant createdAt, final int partitionCount, final String[] partitionIds) {
         this.path = path;

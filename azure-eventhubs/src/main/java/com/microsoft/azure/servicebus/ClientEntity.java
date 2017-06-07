@@ -51,7 +51,7 @@ public abstract class ClientEntity {
     }
 
     // used to force close when entity is faulted
-    protected final void setClosed() {
+    final void setClosed() {
         synchronized (this.syncClose) {
             this.isClosed = true;
         }
@@ -102,13 +102,13 @@ public abstract class ClientEntity {
         }
     }
 
-    protected final void throwIfClosed() {
+    final void throwIfClosed() {
         if (this.getIsClosingOrClosed()) {
             throw new IllegalStateException(String.format(Locale.US, "Operation not allowed after the %s instance is Closed.", this.getClass().getName()), this.getLastKnownError());
         }
     }
 
-    protected Exception getLastKnownError() {
+    Exception getLastKnownError() {
         return null;
     }
 }

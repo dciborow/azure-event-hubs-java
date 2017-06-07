@@ -18,9 +18,9 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
 public class SharedAccessSignatureTokenProvider {
-    final String keyName;
-    final String sharedAccessKey;
-    final String sharedAccessSignature;
+    private final String keyName;
+    private final String sharedAccessKey;
+    private final String sharedAccessSignature;
 
     SharedAccessSignatureTokenProvider(
             final String keyName,

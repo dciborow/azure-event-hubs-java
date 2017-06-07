@@ -8,8 +8,8 @@ import java.time.Instant;
 
 import org.apache.qpid.proton.engine.Session;
 
-public final class TrackingUtil {
-    public static final String TRACKING_ID_TOKEN_SEPARATOR = "_";
+final class TrackingUtil {
+    private static final String TRACKING_ID_TOKEN_SEPARATOR = "_";
 
     private TrackingUtil() {
     }

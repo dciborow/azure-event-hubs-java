@@ -4,9 +4,9 @@
  */
 package com.microsoft.azure.servicebus;
 
-public final class PassByRef<T extends Object> {
+public final class PassByRef<T> {
 
-    T t;
+    private T t;
 
     public T get() {
         return this.t;

@@ -7,14 +7,14 @@ package com.microsoft.azure.servicebus;
 import java.util.Locale;
 
 public class ReceiverContext extends ErrorContext {
-    final static boolean EPOCH_RECEIVER_TYPE = true;
+    private final static boolean EPOCH_RECEIVER_TYPE = true;
     final static boolean NON_EPOCH_RECEIVER_TYPE = !ReceiverContext.EPOCH_RECEIVER_TYPE;
 
-    final String receivePath;
-    final String referenceId;
-    final Integer prefetchCount;
-    final Integer currentLinkCredit;
-    final Integer prefetchQueueLength;
+    private final String receivePath;
+    private final String referenceId;
+    private final Integer prefetchCount;
+    private final Integer currentLinkCredit;
+    private final Integer prefetchQueueLength;
 
     ReceiverContext(
             final String namespaceName,

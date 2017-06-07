@@ -13,11 +13,11 @@ import org.apache.qpid.proton.engine.*;
 import com.microsoft.azure.servicebus.ClientConstants;
 
 public class BaseLinkHandler extends BaseHandler {
-    protected static final Logger TRACE_LOGGER = Logger.getLogger(ClientConstants.SERVICEBUS_CLIENT_TRACE);
+    static final Logger TRACE_LOGGER = Logger.getLogger(ClientConstants.SERVICEBUS_CLIENT_TRACE);
 
     private final IAmqpLink underlyingEntity;
 
-    public BaseLinkHandler(final IAmqpLink amqpLink) {
+    BaseLinkHandler(final IAmqpLink amqpLink) {
         this.underlyingEntity = amqpLink;
     }
 
@@ -41,10 +41,8 @@ public class BaseLinkHandler extends BaseHandler {
             link.close();
         }
 
-        if (link != null) {
-            ErrorCondition condition = link.getRemoteCondition();
-            this.processOnClose(link, condition);
-        }
+        ErrorCondition condition = link.getRemoteCondition();
+        this.processOnClose(link, condition);
 
         closeSession(link);
     }
@@ -57,9 +55,7 @@ public class BaseLinkHandler extends BaseHandler {
             link.close();
         }
 
-        if (link != null) {
-            this.processOnClose(link, link.getRemoteCondition());
-        }
+        this.processOnClose(link, link.getRemoteCondition());
 
         closeSession(link);
     }
@@ -67,8 +63,7 @@ public class BaseLinkHandler extends BaseHandler {
     public void processOnClose(Link link, ErrorCondition condition) {
         if (condition != null) {
             if (TRACE_LOGGER.isLoggable(Level.FINE)) {
-                TRACE_LOGGER.log(Level.FINE, "linkName[" + link.getName() +
-                        (condition != null ? "], ErrorCondition[" + condition.getCondition() + ", " + condition.getDescription() + "]" : "], condition[null]"));
+                TRACE_LOGGER.log(Level.FINE, "linkName[" + link.getName() + "], ErrorCondition[" + condition.getCondition() + ", " + condition.getDescription() + "]");
             }
         }
 

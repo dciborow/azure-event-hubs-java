@@ -26,7 +26,7 @@ import com.microsoft.azure.servicebus.ClientConstants;
 import com.microsoft.azure.servicebus.ServiceBusException;
 
 public class SessionHandler extends BaseHandler {
-    protected static final Logger TRACE_LOGGER = Logger.getLogger(ClientConstants.SERVICEBUS_CLIENT_TRACE);
+    private static final Logger TRACE_LOGGER = Logger.getLogger(ClientConstants.SERVICEBUS_CLIENT_TRACE);
 
     private final String entityName;
     private final Consumer<Session> onRemoteSessionOpen;
@@ -56,11 +56,12 @@ public class SessionHandler extends BaseHandler {
                 }
             }
 
-            final ReactorDispatcher reactorDispatcher = reactorHandler.getReactorDispatcher();
+            final ReactorDispatcher reactorDispatcher = reactorHandler != null ? reactorHandler.getReactorDispatcher() : null;
             final Session session = e.getSession();
 
             try {
 
+                assert reactorDispatcher != null;
                 reactorDispatcher.invoke(ClientConstants.SESSION_OPEN_TIMEOUT_IN_MS, new SessionTimeoutHandler(session));
             } catch (IOException ignore) {
 
@@ -119,7 +120,7 @@ public class SessionHandler extends BaseHandler {
 
         this.sessionOpenErrorDispatched = true;
         if (!sessionCreated && this.onRemoteSessionOpenError != null)
-            this.onRemoteSessionOpenError.accept(session.getRemoteCondition(), null);
+            this.onRemoteSessionOpenError.accept(session != null ? session.getRemoteCondition() : null, null);
     }
 
     @Override

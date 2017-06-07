@@ -8,7 +8,7 @@ import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ScheduledFuture;
 
-public class ReplayableWorkItem<T> extends WorkItem<T> {
+class ReplayableWorkItem<T> extends WorkItem<T> {
     private byte[] amqpMessage;
     private int messageFormat;
     private int encodedMessageSize;

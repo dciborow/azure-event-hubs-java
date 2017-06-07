@@ -116,7 +116,7 @@ final class ExceptionUtil {
 
         Throwable innerException = exception.getCause();
         if (innerException != null) {
-            builder.append("Cause: " + innerException.getMessage());
+            builder.append("Cause: ").append(innerException.getMessage());
             if (innerException.getStackTrace() != null)
                 for (StackTraceElement ste : innerException.getStackTrace()) {
                     builder.append(System.lineSeparator());

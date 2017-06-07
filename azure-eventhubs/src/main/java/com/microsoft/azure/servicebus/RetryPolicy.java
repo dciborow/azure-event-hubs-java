@@ -12,10 +12,10 @@ public abstract class RetryPolicy {
     private static final RetryPolicy NO_RETRY = new RetryExponential(Duration.ofSeconds(0), Duration.ofSeconds(0), 0, ClientConstants.NO_RETRY);
 
     private final String name;
-    private ConcurrentHashMap<String, Integer> retryCounts;
-    private Object serverBusySync;
+    private final ConcurrentHashMap<String, Integer> retryCounts;
+    private final Object serverBusySync;
 
-    protected RetryPolicy(final String name) {
+    RetryPolicy(final String name) {
         this.name = name;
         this.retryCounts = new ConcurrentHashMap<String, Integer>();
         this.serverBusySync = new Object();
@@ -28,21 +28,18 @@ public abstract class RetryPolicy {
 
     public void resetRetryCount(String clientId) {
         Integer currentRetryCount = this.retryCounts.get(clientId);
-        if (currentRetryCount != null && currentRetryCount.intValue() != 0) {
+        if (currentRetryCount != null && currentRetryCount != 0) {
             this.retryCounts.put(clientId, 0);
         }
     }
 
-    public static boolean isRetryableException(Exception exception) {
+    static boolean isRetryableException(Exception exception) {
         if (exception == null) {
             throw new IllegalArgumentException("exception cannot be null");
         }
 
-        if (exception instanceof ServiceBusException) {
-            return ((ServiceBusException) exception).getIsTransient();
-        }
+        return exception instanceof ServiceBusException && ((ServiceBusException) exception).getIsTransient();
 
-        return false;
     }
 
     public static RetryPolicy getDefault() {
@@ -57,7 +54,7 @@ public abstract class RetryPolicy {
         return RetryPolicy.NO_RETRY;
     }
 
-    protected int getRetryCount(String clientId) {
+    int getRetryCount(String clientId) {
         Integer retryCount = this.retryCounts.get(clientId);
         return retryCount == null ? 0 : retryCount;
     }

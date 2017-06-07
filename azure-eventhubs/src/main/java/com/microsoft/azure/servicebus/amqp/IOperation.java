@@ -6,5 +6,5 @@ package com.microsoft.azure.servicebus.amqp;
 
 public interface IOperation<T> {
 
-    public void run(IOperationResult<T, Exception> operationCallback);
+    void run(IOperationResult<T, Exception> operationCallback);
 }

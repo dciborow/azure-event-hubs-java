@@ -16,14 +16,14 @@ import com.microsoft.azure.servicebus.amqp.ReactorDispatcher;
 
 public class FaultTolerantObject<T extends IIOObject> {
 
-    final IOperation<T> openTask;
-    final IOperation<Void> closeTask;
-    final Queue<IOperationResult<T, Exception>> openCallbacks;
-    final Queue<IOperationResult<Void, Exception>> closeCallbacks;
+    private final IOperation<T> openTask;
+    private final IOperation<Void> closeTask;
+    private final Queue<IOperationResult<T, Exception>> openCallbacks;
+    private final Queue<IOperationResult<Void, Exception>> closeCallbacks;
 
-    T innerObject;
-    boolean creatingNewInnerObject;
-    boolean closingInnerObject;
+    private T innerObject;
+    private boolean creatingNewInnerObject;
+    private boolean closingInnerObject;
 
     public FaultTolerantObject(
             final IOperation<T> openAsync,

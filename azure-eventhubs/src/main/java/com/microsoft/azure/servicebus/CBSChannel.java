@@ -6,18 +6,13 @@ package com.microsoft.azure.servicebus;
 
 import java.util.Map;
 import java.util.HashMap;
-import java.util.function.BiConsumer;
 
 import org.apache.qpid.proton.Proton;
 import org.apache.qpid.proton.amqp.messaging.ApplicationProperties;
-import org.apache.qpid.proton.engine.Session;
 import org.apache.qpid.proton.message.Message;
 import org.apache.qpid.proton.amqp.messaging.AmqpValue;
-import org.apache.qpid.proton.amqp.transport.ErrorCondition;
 
-import com.microsoft.azure.servicebus.amqp.AmqpException;
 import com.microsoft.azure.servicebus.amqp.IAmqpConnection;
-import com.microsoft.azure.servicebus.amqp.IOperation;
 import com.microsoft.azure.servicebus.amqp.IOperationResult;
 import com.microsoft.azure.servicebus.amqp.ISessionProvider;
 import com.microsoft.azure.servicebus.amqp.ReactorDispatcher;
@@ -28,9 +23,9 @@ import com.microsoft.azure.servicebus.amqp.AmqpResponseCode;
 
 public class CBSChannel {
 
-    final FaultTolerantObject<RequestResponseChannel> innerChannel;
-    final ISessionProvider sessionProvider;
-    final IAmqpConnection connectionEventDispatcher;
+    private final FaultTolerantObject<RequestResponseChannel> innerChannel;
+    private final ISessionProvider sessionProvider;
+    private final IAmqpConnection connectionEventDispatcher;
 
     public CBSChannel(
             final ISessionProvider sessionProvider,

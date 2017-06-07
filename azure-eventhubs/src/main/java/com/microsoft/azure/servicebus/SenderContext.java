@@ -7,9 +7,9 @@ package com.microsoft.azure.servicebus;
 import java.util.Locale;
 
 public class SenderContext extends ErrorContext {
-    final String sendPath;
-    final String referenceId;
-    final Integer currentLinkCredit;
+    private final String sendPath;
+    private final String referenceId;
+    private final Integer currentLinkCredit;
 
     SenderContext(
             final String namespaceName,

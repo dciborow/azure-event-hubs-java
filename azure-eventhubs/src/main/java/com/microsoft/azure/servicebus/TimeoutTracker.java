@@ -15,7 +15,7 @@ public class TimeoutTracker {
      * @param timeout              original operationTimeout
      * @param startTrackingTimeout whether/not to start the timeout tracking - right now. if not started now, timer tracking will start upon the first call to {@link TimeoutTracker#elapsed()}/{@link TimeoutTracker#remaining()}
      */
-    public TimeoutTracker(Duration timeout, boolean startTrackingTimeout) {
+    private TimeoutTracker(Duration timeout, boolean startTrackingTimeout) {
         if (timeout.compareTo(Duration.ZERO) < 0) {
             throw new IllegalArgumentException("timeout should be non-negative");
         }

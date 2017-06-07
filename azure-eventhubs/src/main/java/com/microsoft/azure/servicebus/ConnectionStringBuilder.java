@@ -36,19 +36,19 @@ import java.util.regex.Pattern;
  * </ul>
  */
 public class ConnectionStringBuilder {
-    final static String endpointFormat = "amqps://%s.servicebus.windows.net";
-    final static String endpointRawFormat = "amqps://%s";
+    private final static String endpointFormat = "amqps://%s.servicebus.windows.net";
+    private final static String endpointRawFormat = "amqps://%s";
 
-    final static String HostnameConfigName = "Hostname";
-    final static String EndpointConfigName = "Endpoint";
-    final static String SharedAccessKeyNameConfigName = "SharedAccessKeyName";
-    final static String SharedAccessKeyConfigName = "SharedAccessKey";
-    final static String SharedAccessSignatureConfigName = "SharedAccessSignature";
-    final static String EntityPathConfigName = "EntityPath";
-    final static String OperationTimeoutConfigName = "OperationTimeout";
-    final static String RetryPolicyConfigName = "RetryPolicy";
-    final static String KeyValueSeparator = "=";
-    final static String KeyValuePairDelimiter = ";";
+    private final static String HostnameConfigName = "Hostname";
+    private final static String EndpointConfigName = "Endpoint";
+    private final static String SharedAccessKeyNameConfigName = "SharedAccessKeyName";
+    private final static String SharedAccessKeyConfigName = "SharedAccessKey";
+    private final static String SharedAccessSignatureConfigName = "SharedAccessSignature";
+    private final static String EntityPathConfigName = "EntityPath";
+    private final static String OperationTimeoutConfigName = "OperationTimeout";
+    private final static String RetryPolicyConfigName = "RetryPolicy";
+    private final static String KeyValueSeparator = "=";
+    private final static String KeyValuePairDelimiter = ";";
 
     private static final String AllKeyEnumerateRegex = "(" + HostnameConfigName + "|" + EndpointConfigName + "|" + SharedAccessKeyNameConfigName
             + "|" + SharedAccessKeyConfigName + "|" + SharedAccessSignatureConfigName + "|" + EntityPathConfigName + "|" + OperationTimeoutConfigName
@@ -307,7 +307,7 @@ public class ConnectionStringBuilder {
 
     private void parseConnectionString(final String connectionString) {
         if (StringUtil.isNullOrWhiteSpace(connectionString)) {
-            throw new IllegalConnectionStringFormatException(String.format("connectionString cannot be empty"));
+            throw new IllegalConnectionStringFormatException("connectionString cannot be empty");
         }
 
         final String connection = KeyValuePairDelimiter + connectionString;

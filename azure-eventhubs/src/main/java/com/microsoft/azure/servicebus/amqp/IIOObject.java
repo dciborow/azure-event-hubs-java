@@ -6,7 +6,7 @@ package com.microsoft.azure.servicebus.amqp;
 
 public interface IIOObject {
 
-    public static enum IOObjectState {
+    enum IOObjectState {
         OPENING,
         OPENED,
         CLOSED,
@@ -14,5 +14,5 @@ public interface IIOObject {
     }
 
     // should be run on reactor thread
-    public IOObjectState getState();
+    IOObjectState getState();
 }

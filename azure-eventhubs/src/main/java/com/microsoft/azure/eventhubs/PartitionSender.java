@@ -182,7 +182,7 @@ public final class PartitionSender extends ClientEntity {
      * @throws PayloadSizeExceededException if the total size of the {@link EventData} exceeds a pre-defined limit set by the service. Default is 256k bytes.
      * @throws ServiceBusException          if Service Bus service encountered problems during the operation.
      */
-    public final CompletableFuture<Void> send(Iterable<EventData> eventDatas)
+    private CompletableFuture<Void> send(Iterable<EventData> eventDatas)
             throws ServiceBusException {
         if (eventDatas == null || IteratorUtil.sizeEquals(eventDatas, 0)) {
             throw new IllegalArgumentException("EventData batch cannot be empty.");

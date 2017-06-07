@@ -51,7 +51,7 @@ public final class PartitionReceiver extends ClientEntity implements IReceiverSe
     private static final int MINIMUM_PREFETCH_COUNT = 10;
     private static final int MAXIMUM_PREFETCH_COUNT = 999;
 
-    static final int DEFAULT_PREFETCH_COUNT = 999;
+    private static final int DEFAULT_PREFETCH_COUNT = 999;
     static final long NULL_EPOCH = 0;
 
     /**
@@ -72,14 +72,14 @@ public final class PartitionReceiver extends ClientEntity implements IReceiverSe
     private final String consumerGroupName;
     private final Object receiveHandlerLock;
 
-    private String startingOffset;
-    private boolean offsetInclusive;
-    private Instant startingDateTime;
+    private final String startingOffset;
+    private final boolean offsetInclusive;
+    private final Instant startingDateTime;
     private MessageReceiver internalReceiver;
-    private Long epoch;
-    private boolean isEpochReceiver;
+    private final Long epoch;
+    private final boolean isEpochReceiver;
     private ReceivePump receivePump;
-    private ReceiverOptions receiverOptions;
+    private final ReceiverOptions receiverOptions;
     private ReceiverRuntimeInformation runtimeInformation;
 
     private PartitionReceiver(MessagingFactory factory,
@@ -166,7 +166,7 @@ public final class PartitionReceiver extends ClientEntity implements IReceiverSe
      *
      * @return The identifier representing the partition from which this receiver is fetching data
      */
-    public final String getPartitionId() {
+    private String getPartitionId() {
         return this.partitionId;
     }
 
@@ -294,7 +294,7 @@ public final class PartitionReceiver extends ClientEntity implements IReceiverSe
      * @param maxEventCount maximum number of {@link EventData}'s that this call should return
      * @return A completableFuture that will yield a batch of {@link EventData}'s from the partition on which this receiver is created. Returns 'null' if no {@link EventData} is present.
      */
-    public CompletableFuture<Iterable<EventData>> receive(final int maxEventCount) {
+    private CompletableFuture<Iterable<EventData>> receive(final int maxEventCount) {
         return this.internalReceiver.receive(maxEventCount).thenApply(new Function<Collection<Message>, Iterable<EventData>>() {
             @Override
             public Iterable<EventData> apply(Collection<Message> amqpMessages) {
@@ -430,7 +430,7 @@ public final class PartitionReceiver extends ClientEntity implements IReceiverSe
             }
 
             if (TRACE_LOGGER.isLoggable(Level.FINE)) {
-                String logReceivePath = "";
+                String logReceivePath;
                 if (this.internalReceiver == null) {
                     // During startup, internalReceiver is still null. Need to handle this special case when logging during startup
                     // or the reactor thread crashes with NPE when calling internalReceiver.getReceivePath() and no receiving occurs.

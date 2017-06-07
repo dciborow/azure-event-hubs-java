@@ -101,7 +101,7 @@ public final class MessageReceiver extends ClientEntity implements IAmqpReceiver
         // onOperationTimeout delegate - per receive call
         this.onOperationTimedout = new Runnable() {
             public void run() {
-                WorkItem<Collection<Message>> topWorkItem = null;
+                WorkItem<Collection<Message>> topWorkItem;
                 while ((topWorkItem = MessageReceiver.this.pendingReceives.peek()) != null) {
                     if (topWorkItem.getTimeoutTracker().remaining().toMillis() <= MessageReceiver.MIN_TIMEOUT_DURATION_MILLIS) {
                         WorkItem<Collection<Message>> dequedWorkItem = MessageReceiver.this.pendingReceives.poll();
@@ -345,7 +345,7 @@ public final class MessageReceiver extends ClientEntity implements IAmqpReceiver
             if (this.closeTimer != null)
                 this.closeTimer.cancel(false);
 
-            WorkItem<Collection<Message>> workItem = null;
+            WorkItem<Collection<Message>> workItem;
             final boolean isTransientException = exception == null ||
                     (exception instanceof ServiceBusException && ((ServiceBusException) exception).getIsTransient());
             while ((workItem = this.pendingReceives.poll()) != null) {
@@ -393,7 +393,7 @@ public final class MessageReceiver extends ClientEntity implements IAmqpReceiver
             }
 
             if (nextRetryInterval == null || !recreateScheduled) {
-                WorkItem<Collection<Message>> pendingReceive = null;
+                WorkItem<Collection<Message>> pendingReceive;
                 while ((pendingReceive = this.pendingReceives.poll()) != null) {
                     ExceptionUtil.completeExceptionally(pendingReceive.getWork(), completionException, this);
                 }
@@ -465,7 +465,7 @@ public final class MessageReceiver extends ClientEntity implements IAmqpReceiver
             @Override
             public void accept(ErrorCondition t, Exception u) {
                 if (t != null)
-                    onError((t != null && t.getCondition() != null) ? ExceptionUtil.toException(t) : null);
+                    onError(t.getCondition() != null ? ExceptionUtil.toException(t) : null);
                 else if (u != null)
                     onError(u);
             }
@@ -574,7 +574,7 @@ public final class MessageReceiver extends ClientEntity implements IAmqpReceiver
                             }
 
                             ExceptionUtil.completeExceptionally(linkClose, operationTimedout, MessageReceiver.this);
-                            MessageReceiver.this.onError((Exception) null);
+                            MessageReceiver.this.onError(null);
                         }
                     }
                 }
@@ -600,14 +600,12 @@ public final class MessageReceiver extends ClientEntity implements IAmqpReceiver
                 ? link.getRemoteProperties().get(ClientConstants.TRACKING_ID_PROPERTY).toString()
                 : ((link != null) ? link.getName() : null);
 
-        final ReceiverContext errorContext = new ReceiverContext(this.underlyingFactory != null ? this.underlyingFactory.getHostName() : null,
+        return new ReceiverContext(this.underlyingFactory != null ? this.underlyingFactory.getHostName() : null,
                 this.receivePath,
                 referenceId,
                 isLinkOpened ? this.prefetchCount : null,
                 isLinkOpened && link != null ? link.getCredit() : null,
                 isLinkOpened && this.prefetchedMessages != null ? this.prefetchedMessages.size() : null);
-
-        return errorContext;
     }
 
     private static class ReceiveWorkItem extends WorkItem<Collection<Message>> {

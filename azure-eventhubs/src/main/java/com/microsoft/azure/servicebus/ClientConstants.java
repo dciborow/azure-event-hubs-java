@@ -95,20 +95,18 @@ public final class ClientConstants {
 
     private static String getPlatformInfo() {
         final Package javaRuntimeClassPkg = Runtime.class.getPackage();
-        final StringBuilder patformInfo = new StringBuilder();
-        patformInfo.append("jre:");
-        patformInfo.append(javaRuntimeClassPkg.getImplementationVersion());
-        patformInfo.append(";vendor:");
-        patformInfo.append(javaRuntimeClassPkg.getImplementationVendor());
-        patformInfo.append(";jvm:");
-        patformInfo.append(System.getProperty("java.vm.version"));
-        patformInfo.append(";arch:");
-        patformInfo.append(System.getProperty("os.arch"));
-        patformInfo.append(";os:");
-        patformInfo.append(System.getProperty("os.name"));
-        patformInfo.append(";os version:");
-        patformInfo.append(System.getProperty("os.version"));
 
-        return patformInfo.toString();
+        return "jre:" +
+                javaRuntimeClassPkg.getImplementationVersion() +
+                ";vendor:" +
+                javaRuntimeClassPkg.getImplementationVendor() +
+                ";jvm:" +
+                System.getProperty("java.vm.version") +
+                ";arch:" +
+                System.getProperty("os.arch") +
+                ";os:" +
+                System.getProperty("os.name") +
+                ";os version:" +
+                System.getProperty("os.version");
     }
 }

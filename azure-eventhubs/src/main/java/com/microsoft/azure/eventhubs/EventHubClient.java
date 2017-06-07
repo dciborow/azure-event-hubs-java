@@ -80,7 +80,7 @@ public class EventHubClient extends ClientEntity implements IEventHubClient {
      * @throws ServiceBusException If Service Bus service encountered problems during connection creation.
      * @throws IOException         If the underlying Proton-J layer encounter network errors.
      */
-    public static EventHubClient createFromConnectionStringSync(final String connectionString, final RetryPolicy retryPolicy)
+    private static EventHubClient createFromConnectionStringSync(final String connectionString, final RetryPolicy retryPolicy)
             throws ServiceBusException, IOException {
         try {
             return createFromConnectionString(connectionString, retryPolicy).get();
@@ -133,12 +133,12 @@ public class EventHubClient extends ClientEntity implements IEventHubClient {
      * @throws ServiceBusException If Service Bus service encountered problems during connection creation.
      * @throws IOException         If the underlying Proton-J layer encounter network errors.
      */
-    public static CompletableFuture<EventHubClient> createFromConnectionString(final String connectionString, final RetryPolicy retryPolicy)
+    private static CompletableFuture<EventHubClient> createFromConnectionString(final String connectionString, final RetryPolicy retryPolicy)
             throws ServiceBusException, IOException {
         final ConnectionStringBuilder connStr = new ConnectionStringBuilder(connectionString);
         final EventHubClient eventHubClient = new EventHubClient(connStr);
 
-        return MessagingFactory.createFromConnectionString(connectionString.toString(), retryPolicy)
+        return MessagingFactory.createFromConnectionString(connectionString, retryPolicy)
                 .thenApply(new Function<MessagingFactory, EventHubClient>() {
                     @Override
                     public EventHubClient apply(MessagingFactory factory) {
@@ -1254,7 +1254,8 @@ public class EventHubClient extends ClientEntity implements IEventHubClient {
     public CompletableFuture<Void> onClose() {
         if (this.underlyingFactory != null) {
             synchronized (this.senderCreateSync) {
-                final CompletableFuture<Void> internalSenderClose = this.sender != null
+
+                return this.sender != null
                         ? this.sender.close().thenCompose(new Function<Void, CompletableFuture<Void>>() {
                     @Override
                     public CompletableFuture<Void> apply(Void voidArg) {
@@ -1262,8 +1263,6 @@ public class EventHubClient extends ClientEntity implements IEventHubClient {
                     }
                 })
                         : this.underlyingFactory.close();
-
-                return internalSenderClose;
             }
         }
 
@@ -1298,13 +1297,13 @@ public class EventHubClient extends ClientEntity implements IEventHubClient {
      */
     @Override
     public CompletableFuture<EventHubRuntimeInformation> getRuntimeInformation() {
-    	CompletableFuture<EventHubRuntimeInformation> future1 = null;
+    	CompletableFuture<EventHubRuntimeInformation> future1;
     	
     	Map<String, String> request = new HashMap<String, String>();
         request.put(ClientConstants.MANAGEMENT_ENTITY_TYPE_KEY, ClientConstants.MANAGEMENT_EVENTHUB_ENTITY_TYPE);
         request.put(ClientConstants.MANAGEMENT_ENTITY_NAME_KEY, this.eventHubName);
         request.put(ClientConstants.MANAGEMENT_OPERATION_KEY, ClientConstants.READ_OPERATION_VALUE);
-        future1 = this.<EventHubRuntimeInformation>addManagementToken(request);
+        future1 = this.addManagementToken(request);
 
         if (future1 == null) {
 	        future1 = managementWithRetry(request).thenCompose(new Function<Map<String, Object>, CompletableFuture<EventHubRuntimeInformation>>() {
@@ -1334,14 +1333,14 @@ public class EventHubClient extends ClientEntity implements IEventHubClient {
      */
     @Override
     public CompletableFuture<EventHubPartitionRuntimeInformation> getPartitionRuntimeInformation(String partitionId) {
-    	CompletableFuture<EventHubPartitionRuntimeInformation> future1 = null;
+    	CompletableFuture<EventHubPartitionRuntimeInformation> future1;
     	
     	Map<String, String> request = new HashMap<String, String>();
         request.put(ClientConstants.MANAGEMENT_ENTITY_TYPE_KEY, ClientConstants.MANAGEMENT_PARTITION_ENTITY_TYPE);
         request.put(ClientConstants.MANAGEMENT_ENTITY_NAME_KEY, this.eventHubName);
         request.put(ClientConstants.MANAGEMENT_PARTITION_NAME_KEY, partitionId);
         request.put(ClientConstants.MANAGEMENT_OPERATION_KEY, ClientConstants.READ_OPERATION_VALUE);
-        future1 = this.<EventHubPartitionRuntimeInformation>addManagementToken(request);
+        future1 = this.addManagementToken(request);
 
         if (future1 == null) {
 	        future1 = managementWithRetry(request).thenCompose(new Function<Map<String, Object>, CompletableFuture<EventHubPartitionRuntimeInformation>>() {
@@ -1414,7 +1413,7 @@ public class EventHubClient extends ClientEntity implements IEventHubClient {
 					}
 					else {
 						Duration remainingTime = Duration.between(Instant.now(), ManagementRetry.this.endTime);
-						Exception lastException = null;
+						Exception lastException;
 						Throwable completeWith = error;
 						if (error == null) {
 							// Timeout, so fake up an exception to keep getNextRetryInternal happy.

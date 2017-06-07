@@ -9,7 +9,7 @@ import com.microsoft.azure.servicebus.ServiceBusException;
 import java.time.Instant;
 import java.util.concurrent.CompletableFuture;
 
-public interface IEventHubClient {
+interface IEventHubClient {
     void sendSync(EventData data)
             throws ServiceBusException;
 

@@ -20,7 +20,7 @@ public class ReceivePump {
     private final boolean invokeOnTimeout;
     private final CompletableFuture<Void> stopPump;
 
-    private AtomicBoolean stopPumpRaised;
+    private final AtomicBoolean stopPumpRaised;
 
     public ReceivePump(
             final IPartitionReceiver receiver,
@@ -51,20 +51,14 @@ public class ReceivePump {
             }
 
             try {
-                if (receivedEvents != null || (receivedEvents == null && this.invokeOnTimeout && isPumpHealthy)) {
+                if (receivedEvents != null || this.invokeOnTimeout && isPumpHealthy) {
                     this.onReceiveHandler.onReceive(receivedEvents);
                 }
             } catch (Throwable userCodeError) {
                 isPumpHealthy = false;
                 this.onReceiveHandler.onError(userCodeError);
 
-                if (userCodeError instanceof InterruptedException) {
-                    if (TRACE_LOGGER.isLoggable(Level.FINE)) {
-                        TRACE_LOGGER.log(Level.FINE, String.format("Interrupting receive pump for partition (%s)", this.receiver.getPartitionId()));
-                    }
-
-                    Thread.currentThread().interrupt();
-                } else if (TRACE_LOGGER.isLoggable(Level.SEVERE)) {
+                if (TRACE_LOGGER.isLoggable(Level.SEVERE)) {
                     TRACE_LOGGER.log(Level.SEVERE, String.format("Receive pump for partition (%s) exiting after user exception %s", this.receiver.getPartitionId(), userCodeError.toString()));
                 }
             }
@@ -83,9 +77,9 @@ public class ReceivePump {
     }
 
     // partition receiver contract against which this pump works
-    public static interface IPartitionReceiver {
-        public String getPartitionId();
+    public interface IPartitionReceiver {
+        String getPartitionId();
 
-        public Iterable<EventData> receive(final int maxBatchSize) throws ServiceBusException;
+        Iterable<EventData> receive(final int maxBatchSize) throws ServiceBusException;
     }
 }

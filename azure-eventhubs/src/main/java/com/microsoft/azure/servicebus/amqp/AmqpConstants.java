@@ -32,7 +32,7 @@ public final class AmqpConstants {
         add(AMQP_PROPERTY_REPLY_TO_GROUP_ID);
     }});
 
-    public static final String APACHE = "apache.org";
+    private static final String APACHE = "apache.org";
     public static final String VENDOR = "com.microsoft";
 
     public static final String AMQP_ANNOTATION_FORMAT = "amqp.annotation.%s >%s '%s'";

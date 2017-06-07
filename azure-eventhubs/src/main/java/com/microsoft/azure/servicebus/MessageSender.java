@@ -14,7 +14,6 @@ import java.time.ZonedDateTime;
 import java.util.Comparator;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -176,7 +175,7 @@ public class MessageSender extends ClientEntity implements IAmqpSender, IErrorCo
                 ClientConstants.TOKEN_REFRESH_INTERVAL);
     }
 
-    public String getSendPath() {
+    private String getSendPath() {
         return this.sendPath;
     }
 
@@ -290,7 +289,7 @@ public class MessageSender extends ClientEntity implements IAmqpSender, IErrorCo
         int allocationSize = Math.min(payloadSize + ClientConstants.MAX_EVENTHUB_AMQP_HEADER_SIZE_BYTES, ClientConstants.MAX_MESSAGE_LENGTH_BYTES);
 
         final byte[] bytes = new byte[allocationSize];
-        int encodedSize = 0;
+        int encodedSize;
         try {
             encodedSize = msg.encode(bytes, 0, allocationSize);
         } catch (BufferOverflowException exception) {
@@ -332,9 +331,7 @@ public class MessageSender extends ClientEntity implements IAmqpSender, IErrorCo
                         unacknowledgedSends.addAll(this.pendingSendsData.keySet());
 
                         if (unacknowledgedSends.size() > 0) {
-                            Iterator<String> reverseReader = unacknowledgedSends.iterator();
-                            while (reverseReader.hasNext()) {
-                                String unacknowledgedSend = reverseReader.next();
+                            for (String unacknowledgedSend : unacknowledgedSends) {
                                 if (this.pendingSendsData.get(unacknowledgedSend).isWaitingForAck()) {
                                     this.pendingSends.offer(new WeightedDeliveryTag(unacknowledgedSend, 1));
                                 }
@@ -385,7 +382,6 @@ public class MessageSender extends ClientEntity implements IAmqpSender, IErrorCo
 
             this.linkClose.complete(null);
 
-            return;
         } else {
             synchronized (this.errorConditionLock) {
                 this.lastKnownLinkError = completionException == null ? this.lastKnownLinkError : completionException;
@@ -557,7 +553,7 @@ public class MessageSender extends ClientEntity implements IAmqpSender, IErrorCo
             @Override
             public void accept(ErrorCondition t, Exception u) {
                 if (t != null)
-                    MessageSender.this.onError((t != null && t.getCondition() != null) ? ExceptionUtil.toException(t) : null);
+                    MessageSender.this.onError(t.getCondition() != null ? ExceptionUtil.toException(t) : null);
                 else if (u != null)
                     MessageSender.this.onError(u);
             }
@@ -638,12 +634,11 @@ public class MessageSender extends ClientEntity implements IAmqpSender, IErrorCo
                 ? link.getRemoteProperties().get(ClientConstants.TRACKING_ID_PROPERTY).toString()
                 : ((link != null) ? link.getName() : null);
 
-        final SenderContext errorContext = new SenderContext(
+        return new SenderContext(
                 this.underlyingFactory != null ? this.underlyingFactory.getHostName() : null,
                 this.sendPath,
                 referenceId,
                 isLinkOpened && link != null ? link.getCredit() : null);
-        return errorContext;
     }
 
     @Override
@@ -800,7 +795,7 @@ public class MessageSender extends ClientEntity implements IAmqpSender, IErrorCo
                             }
 
                             ExceptionUtil.completeExceptionally(linkClose, operationTimedout, MessageSender.this);
-                            MessageSender.this.onError((Exception) null);
+                            MessageSender.this.onError(null);
                         }
                     }
                 }

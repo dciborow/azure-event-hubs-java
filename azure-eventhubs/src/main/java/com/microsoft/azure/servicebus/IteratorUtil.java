@@ -18,7 +18,6 @@ public final class IteratorUtil {
             if (expectedSize > currentSize) {
                 currentSize++;
                 iterator.next();
-                continue;
             } else {
                 return false;
             }
@@ -42,9 +41,6 @@ public final class IteratorUtil {
         }
 
         final Iterator<T> iterator = iterable.iterator();
-        if (iterator == null) {
-            return null;
-        }
 
         return iterator.hasNext() ? iterator.next() : null;
     }

@@ -13,7 +13,7 @@ public class ServiceBusException extends Exception
 {
 	private static final long serialVersionUID = -3654294093967132325L;
 
-	private boolean isTransient;
+	private final boolean isTransient;
 	private ErrorContext errorContext;
 
 	ServiceBusException(final boolean isTransient)

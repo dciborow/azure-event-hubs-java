@@ -18,7 +18,7 @@ public enum AmqpResponseCode {
 
     private final int value;
 
-    private static Map<Integer, AmqpResponseCode> valueMap = new HashMap<>();
+    private static final Map<Integer, AmqpResponseCode> valueMap = new HashMap<>();
 
     static {
         for (AmqpResponseCode code : AmqpResponseCode.values()) {
@@ -26,7 +26,7 @@ public enum AmqpResponseCode {
         }
     }
 
-    private AmqpResponseCode(final int value) {
+    AmqpResponseCode(final int value) {
         this.value = value;
     }
 

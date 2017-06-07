@@ -7,7 +7,7 @@ import org.apache.qpid.proton.engine.Event;
 import org.apache.qpid.proton.engine.Transport;
 import org.apache.qpid.proton.reactor.impl.IOHandler;
 
-public class CustomIOHandler extends IOHandler {
+class CustomIOHandler extends IOHandler {
     @Override
     public void onConnectionLocalOpen(Event event) {
         Connection connection = event.getConnection();

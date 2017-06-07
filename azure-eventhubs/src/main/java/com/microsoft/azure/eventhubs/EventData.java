@@ -71,7 +71,7 @@ public class EventData implements Serializable {
         final HashMap<String, Object> receiveProperties = new HashMap<>();
 
         for (Map.Entry<Symbol, Object> annotation : messageAnnotations.entrySet()) {
-            receiveProperties.put(annotation.getKey().toString(), annotation.getValue() != null ? annotation.getValue() : null);
+            receiveProperties.put(annotation.getKey().toString(), annotation.getValue());
         }
 
         if (amqpMessage.getProperties() != null) {
